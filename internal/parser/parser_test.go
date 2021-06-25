@@ -138,5 +138,26 @@ func TestPreserveMode_Set(t *testing.T) {
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
 
-	// TODO: fill out other cases
+	opts, args = Parse([]string{"cmd", "--no-preserve-root"})
+	expectedOpts.Preserve = PreserveNone
+	assert.Equal(t, expectedOpts, opts)
+	assert.ElementsMatch(t, expectedArgs, args)
+
+	opts, args = Parse([]string{"cmd", "--no-preserve-root", "--one-file-system"})
+	expectedOpts.Preserve = PreserveOtherFs
+	assert.Equal(t, expectedOpts, opts)
+	assert.ElementsMatch(t, expectedArgs, args)
+
+	opts, args = Parse([]string{"cmd", "--one-file-system"})
+	expectedOpts.Preserve = PreserveAll
+	assert.Equal(t, expectedOpts, opts)
+	assert.ElementsMatch(t, expectedArgs, args)
+
+	opts, args = Parse([]string{"cmd", "--preserve-root", "--one-file-system"})
+	assert.Equal(t, expectedOpts, opts)
+	assert.ElementsMatch(t, expectedArgs, args)
+
+	opts, args = Parse([]string{"cmd", "--preserve-root=all"})
+	assert.Equal(t, expectedOpts, opts)
+	assert.ElementsMatch(t, expectedArgs, args)
 }
