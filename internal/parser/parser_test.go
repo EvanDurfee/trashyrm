@@ -12,152 +12,186 @@ func Test_ReorderOpts(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
+func Parse(args []string) (Opts, []string, error) {
+	return NewParser().Parse(args)
+}
+
 func TestInteractiveMode_Set(t *testing.T) {
 	expectedOpts := *NewOpts()
 	var expectedArgs []string
 
-	opts, args := Parse([]string{"cmd"})
+	opts, args, err := Parse([]string{"cmd"})
 	expectedOpts.Interactive = AskOnce
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--interactive"})
+	opts, args, err = Parse([]string{"cmd", "--interactive"})
 	expectedOpts.Interactive = AskAlways
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--interactive="})
+	opts, args, err = Parse([]string{"cmd", "--interactive="})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--interactive=always"})
+	opts, args, err = Parse([]string{"cmd", "--interactive=always"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--interactive=never"})
+	opts, args, err = Parse([]string{"cmd", "--interactive=never"})
 	expectedOpts.Interactive = AskNever
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--interactive=no"})
+	opts, args, err = Parse([]string{"cmd", "--interactive=no"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--interactive=none"})
+	opts, args, err = Parse([]string{"cmd", "--interactive=none"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-i"})
+	opts, args, err = Parse([]string{"cmd", "-i"})
 	expectedOpts.Interactive = AskAlways
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-Ii"})
+	opts, args, err = Parse([]string{"cmd", "-Ii"})
 	expectedOpts.Interactive = AskAlways
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-I"})
+	opts, args, err = Parse([]string{"cmd", "-I"})
 	expectedOpts.Interactive = AskOnce
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-iI"})
+	opts, args, err = Parse([]string{"cmd", "-iI"})
 	expectedOpts.Interactive = AskOnce
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 }
 
 func TestRecycleMode_Set(t *testing.T) {
 	expectedOpts := *NewOpts()
 	var expectedArgs []string
 
-	opts, args := Parse([]string{"cmd"})
+	opts, args, err := Parse([]string{"cmd"})
 	expectedOpts.Recycle = RecycleWhitelist
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--recycle"})
+	opts, args, err = Parse([]string{"cmd", "--recycle"})
 	expectedOpts.Recycle = RecycleAlways
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--recycle="})
+	opts, args, err = Parse([]string{"cmd", "--recycle="})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--recycle=always"})
+	opts, args, err = Parse([]string{"cmd", "--recycle=always"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--recycle=yes"})
+	opts, args, err = Parse([]string{"cmd", "--recycle=yes"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-c"})
+	opts, args, err = Parse([]string{"cmd", "-c"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-uc"})
+	opts, args, err = Parse([]string{"cmd", "-uc"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--recycle=whitelist"})
+	opts, args, err = Parse([]string{"cmd", "--recycle=whitelist"})
 	expectedOpts.Recycle = RecycleWhitelist
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--recycle=trashpath"})
+	opts, args, err = Parse([]string{"cmd", "--recycle=trashpath"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--direct"})
+	opts, args, err = Parse([]string{"cmd", "--direct"})
 	expectedOpts.Recycle = RecycleNever
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--unlink"})
+	opts, args, err = Parse([]string{"cmd", "--unlink"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-u"})
+	opts, args, err = Parse([]string{"cmd", "-u"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "-cu"})
+	opts, args, err = Parse([]string{"cmd", "-cu"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 }
 
 func TestPreserveMode_Set(t *testing.T) {
 	expectedOpts := *NewOpts()
 	var expectedArgs []string
 
-	opts, args := Parse([]string{"cmd"})
+	opts, args, err := Parse([]string{"cmd"})
 	expectedOpts.Preserve = PreserveRoot
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--no-preserve-root"})
+	opts, args, err = Parse([]string{"cmd", "--no-preserve-root"})
 	expectedOpts.Preserve = PreserveNone
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--no-preserve-root", "--one-file-system"})
+	opts, args, err = Parse([]string{"cmd", "--no-preserve-root", "--one-file-system"})
 	expectedOpts.Preserve = PreserveOtherFs
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--one-file-system"})
+	opts, args, err = Parse([]string{"cmd", "--one-file-system"})
 	expectedOpts.Preserve = PreserveAll
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--preserve-root", "--one-file-system"})
+	opts, args, err = Parse([]string{"cmd", "--preserve-root", "--one-file-system"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 
-	opts, args = Parse([]string{"cmd", "--preserve-root=all"})
+	opts, args, err = Parse([]string{"cmd", "--preserve-root=all"})
 	assert.Equal(t, expectedOpts, opts)
 	assert.ElementsMatch(t, expectedArgs, args)
+	assert.NoError(t, err)
 }

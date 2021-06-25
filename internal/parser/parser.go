@@ -26,11 +26,33 @@ func ReorderOpts(opts []string) []string {
 	return append(reordered, kwArgs...)
 }
 
+type Parser interface {
+	Parse(args []string) (Opts, []string, error)
+	Usage() string
+}
+
+type parserInternal struct {
+	opts      *Opts
+	optParser *getopt.Set
+}
+
 // Parse parses the given
-func Parse(args []string) (Opts, []string) {
+func (p *parserInternal) Parse(args []string) (Opts, []string, error) {
 	args = ReorderOpts(args)
-	opts := *NewOpts()
+	err := p.optParser.Getopt(args, nil)
+	return *p.opts, p.optParser.Args(), err
+}
+
+func (p *parserInternal) Usage() string {
+	b := strings.Builder{}
+	getopt.PrintUsage(&b)
+	return b.String()
+}
+
+func NewParser() Parser {
+	opts := NewOpts()
 	optParser := getopt.New()
+	optParser.SetProgram("trashyrm")
 	optParser.FlagLong(&opts.Help, "help", 'h', "Print this message and exit").SetFlag()
 	optParser.FlagLong(&opts.Version, "version", 'v', "Print version information and exit").SetFlag()
 	optParser.FlagLong(&opts.Verbose, "verbose", 0, "Increase verbosity").SetFlag()
@@ -49,6 +71,8 @@ func Parse(args []string) (Opts, []string) {
 	optParser.FlagLong(&opts.Preserve, "preserve-root", 0, "Do not remove '/' (default); with 'all', reject any command line argument on a separate device from its parent", "all").SetOptional()
 	optParser.FlagLong(&opts.Preserve, "no-preserve-root", 0, "Do not treat '/' specially").SetFlag()
 	optParser.FlagLong(&opts.Preserve, "one-file-system", 0, "When removing a hierarchy recursively, skip any directory that is on a file system different from that of the corresponding command line argument").SetFlag()
-	optParser.Parse(args)
-	return opts, optParser.Args()
+	return &parserInternal{
+		opts:      opts,
+		optParser: optParser,
+	}
 }
